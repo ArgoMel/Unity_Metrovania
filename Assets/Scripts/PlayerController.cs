@@ -6,7 +6,6 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Platformer2d controls;
-    private Vector2 moveDir;
     private bool isOnGround=false;
 
     public Rigidbody2D theRB;
@@ -33,16 +32,12 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        controls.Player.Move.performed += ctx => Move(ctx.ReadValue<Vector2>());
+        controls.Player.Move.performed += ctx => OnMovePerformed(ctx.ReadValue<Vector2>());
         controls.Player.Jump.performed += ctx => Jump();
     }
 
     void Update()
     {
-        if (controls.Player.Move.IsPressed())
-        {
-            theRB.velocity = new Vector2(moveDir.x * moveSpeed, theRB.velocity.y);
-        }
         if (theRB.velocity.x<0)
         {
             transform.localScale = new Vector3(-1f,1f,1f);
@@ -55,9 +50,9 @@ public class PlayerController : MonoBehaviour
         UpdateAnim();
     }
 
-    private void Move(Vector2 dir)
+    private void OnMovePerformed(Vector2 dir)
     {
-        moveDir = dir;
+        theRB.velocity = new Vector2(dir.x * moveSpeed, theRB.velocity.y);
     }
 
     private void Jump()
