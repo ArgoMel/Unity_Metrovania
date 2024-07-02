@@ -7,17 +7,35 @@
             "actions": [
                 {
                     "name": "Move",
-                    "type": "PassThrough",
+                    "type": "Value",
                     "id": "10e74036-f106-4b62-bd80-6e14f3d7d1e9",
                     "expectedControlType": "Vector2",
                     "processors": "NormalizeVector2",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Jump",
                     "type": "Button",
                     "id": "38ce74f3-caf4-47a5-9089-30ec5953141c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Fire",
+                    "type": "Button",
+                    "id": "c8259448-b311-4486-bab6-7ed39b99e111",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Dash",
+                    "type": "Button",
+                    "id": "c8980ee9-7df5-4aef-9799-60cb7d3486b1",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -88,6 +106,78 @@
                     "processors": "",
                     "groups": "",
                     "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fff5dd80-9691-44ac-8dd2-77c1a4ef3749",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "495a8614-17f2-4b3a-a170-115c5bfc241e",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9748a322-87ba-4ab9-91da-02c71b501da9",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "25cb886d-5ebf-48ce-b36f-b37cb9259539",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "34907b3e-d8a9-4057-b2af-4b2bbbe1077d",
+            "actions": [
+                {
+                    "name": "QuitMenu",
+                    "type": "Button",
+                    "id": "037b3aab-57e4-4350-8f7d-336bbe932de8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "1074af81-428e-4469-a812-d98582048df9",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "QuitMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private Platformer2d controls;
+    [SerializeField] private InputRender input;
     private Vector2 moveDir;
     private bool isOnGround=false;
 
@@ -16,29 +16,20 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     public float jumpForce;
 
-    private void Awake()
-    {
-        controls = new Platformer2d();
-    }
-
-    private void OnEnable()
-    {
-        controls.Enable();
-    }
-
-    private void OnDisable()
-    {
-        controls.Disable();
-    }
+    public BulletController shotToFire;
+    public Transform shotPoint;
 
     void Start()
     {
-        controls.Player.Jump.performed += ctx => Jump();
+        input.MoveEvent += OnMove;
+        input.JumpEvent += OnJump;
+        input.FireEvent += OnFire;
+        input.DashEvent += OnDash;
     }
 
     void Update()
     {
-        moveDir= controls.Player.Move.ReadValue<Vector2>();
+       
     }
 
     private void FixedUpdate()
@@ -60,12 +51,29 @@ public class PlayerController : MonoBehaviour
         UpdateAnim();
     }
 
-    private void Jump()
+    private void OnMove(Vector2 dir)
+    {
+        moveDir = dir;
+    }
+
+    private void OnJump()
     {
         if (isOnGround)
         {
             theRB.velocity = new Vector2(theRB.velocity.x, jumpForce);
         }
+    }
+
+    private void OnFire()
+    {
+        BulletController bullet=Instantiate(shotToFire,shotPoint.position,shotPoint.rotation);
+        bullet.moveDir = new Vector2(transform.localScale.x,0f);
+        anim.SetTrigger("shotFired");
+    }
+
+    private void OnDash()
+    {
+        
     }
 
     private void UpdateAnim()
