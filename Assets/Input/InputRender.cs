@@ -12,8 +12,9 @@ public class InputRender : ScriptableObject
     private Platformer2d gameInput;
 
     public event Action<Vector2> MoveEvent;
+    public event Action<Vector2> MoveCanceledEvent;
     public event Action JumpEvent;
-    public event Action JumpCancelledEvent;
+    public event Action JumpCanceledEvent;
     public event Action FireEvent;
     public event Action DashEvent;
 
@@ -50,13 +51,17 @@ public class InputRender : ScriptableObject
         }
         if (context.phase == InputActionPhase.Canceled)
         {
-            JumpCancelledEvent?.Invoke();
+            JumpCanceledEvent?.Invoke();
         }
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
         MoveEvent?.Invoke(context.ReadValue<Vector2>());
+        if (context.phase == InputActionPhase.Canceled)
+        {
+            MoveCanceledEvent?.Invoke(context.ReadValue<Vector2>());
+        }
     }
 
     public void OnFire(InputAction.CallbackContext context)
