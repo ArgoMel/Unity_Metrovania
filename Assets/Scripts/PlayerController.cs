@@ -7,10 +7,11 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private InputRender input;
+    private Rigidbody2D theRB;
+    private PlayerAbilityTracker abilitiy;
     private Vector2 moveDir;
     private bool isOnGround=false;
 
-    public Rigidbody2D theRB;
     public Transform groundPoint;
     public Animator anim;
     public LayerMask whatIsGround;
@@ -42,6 +43,12 @@ public class PlayerController : MonoBehaviour
     public Transform bombPoint;
     public float waitToBall;
 
+    private void Awake()
+    {
+        theRB = GetComponent<Rigidbody2D>();
+        abilitiy=GetComponent<PlayerAbilityTracker>();
+    }
+
     void Start()
     {
         input.MoveEvent += OnMove;
@@ -55,24 +62,27 @@ public class PlayerController : MonoBehaviour
     {
         dashRechargeCounter-=Time.deltaTime;
 
-        if (!ball.activeSelf&&
-            moveDir.y<-0.9f)
+        if (abilitiy.canBecomeBall)
         {
-            ballCounter -= Time.deltaTime;
-            if (ballCounter<=0) 
+            if (!ball.activeSelf &&
+                moveDir.y < -0.9f)
             {
-                ball.SetActive(true);
-                standing.SetActive(false);
+                ballCounter -= Time.deltaTime;
+                if (ballCounter <= 0)
+                {
+                    ball.SetActive(true);
+                    standing.SetActive(false);
+                }
             }
-        }
-        else if (ball.activeSelf &&
-            moveDir.y > 0.9f)
-        {
-            ballCounter -= Time.deltaTime;
-            if (ballCounter <= 0)
+            else if (ball.activeSelf &&
+                moveDir.y > 0.9f)
             {
-                ball.SetActive(false);
-                standing.SetActive(true);
+                ballCounter -= Time.deltaTime;
+                if (ballCounter <= 0)
+                {
+                    ball.SetActive(false);
+                    standing.SetActive(true);
+                }
             }
         }
     }
@@ -122,7 +132,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnJump()
     {
-        if (isOnGround|| canDoubleJump)
+        if (isOnGround||
+            (canDoubleJump&&abilitiy.canDoubleJump))
         {
             canDoubleJump = isOnGround;
             if (!canDoubleJump)
@@ -141,7 +152,7 @@ public class PlayerController : MonoBehaviour
             bullet.moveDir = new Vector2(transform.localScale.x, 0f);
             anim.SetTrigger("shotFired");
         }
-        else if (ball.activeSelf) 
+        else if (ball.activeSelf&&abilitiy.canDropBomb) 
         {
             Instantiate(bomb,bombPoint.position, bombPoint.rotation);
         }
@@ -150,7 +161,8 @@ public class PlayerController : MonoBehaviour
     private void OnDash()
     {
         if (dashRechargeCounter>0||
-            !standing.activeSelf)
+            !standing.activeSelf||
+            !abilitiy.canDash)
         {
             return;
         }
