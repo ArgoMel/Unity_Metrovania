@@ -40,6 +40,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "WallGrab",
+                    "type": "Button",
+                    "id": "7412e142-7217-4683-aa14-f14a3c6e0041",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -100,17 +109,6 @@
                 },
                 {
                     "name": "",
-                    "id": "f03415d4-4220-48db-8afa-26cdf67acc7f",
-                    "path": "<Keyboard>/space",
-                    "interactions": "Press",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "fff5dd80-9691-44ac-8dd2-77c1a4ef3749",
                     "path": "<Keyboard>/s",
                     "interactions": "",
@@ -144,12 +142,12 @@
                 },
                 {
                     "name": "",
-                    "id": "25cb886d-5ebf-48ce-b36f-b37cb9259539",
-                    "path": "<Keyboard>/leftShift",
+                    "id": "d368f29f-0879-4855-b0c6-e125aca885d9",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Dash",
+                    "action": "WallGrab",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

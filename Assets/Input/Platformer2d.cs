@@ -62,6 +62,15 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""WallGrab"",
+                    ""type"": ""Button"",
+                    ""id"": ""7412e142-7217-4683-aa14-f14a3c6e0041"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -122,17 +131,6 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""f03415d4-4220-48db-8afa-26cdf67acc7f"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": ""Press"",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Jump"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""fff5dd80-9691-44ac-8dd2-77c1a4ef3749"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
@@ -166,12 +164,12 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""25cb886d-5ebf-48ce-b36f-b37cb9259539"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""id"": ""d368f29f-0879-4855-b0c6-e125aca885d9"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Dash"",
+                    ""action"": ""WallGrab"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -214,6 +212,7 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
+        m_Player_WallGrab = m_Player.FindAction("WallGrab", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_QuitMenu = m_UI.FindAction("QuitMenu", throwIfNotFound: true);
@@ -282,6 +281,7 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_Dash;
+    private readonly InputAction m_Player_WallGrab;
     public struct PlayerActions
     {
         private @Platformer2d m_Wrapper;
@@ -290,6 +290,7 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
+        public InputAction @WallGrab => m_Wrapper.m_Player_WallGrab;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -311,6 +312,9 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
             @Dash.started += instance.OnDash;
             @Dash.performed += instance.OnDash;
             @Dash.canceled += instance.OnDash;
+            @WallGrab.started += instance.OnWallGrab;
+            @WallGrab.performed += instance.OnWallGrab;
+            @WallGrab.canceled += instance.OnWallGrab;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -327,6 +331,9 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
             @Dash.started -= instance.OnDash;
             @Dash.performed -= instance.OnDash;
             @Dash.canceled -= instance.OnDash;
+            @WallGrab.started -= instance.OnWallGrab;
+            @WallGrab.performed -= instance.OnWallGrab;
+            @WallGrab.canceled -= instance.OnWallGrab;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -396,6 +403,7 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
+        void OnWallGrab(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

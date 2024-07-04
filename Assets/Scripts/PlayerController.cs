@@ -1,41 +1,62 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Space]
+    [Header("Component")]
     [SerializeField] private InputRender input;
     private Rigidbody2D theRB;
     private PlayerAbilityTracker abilitiy;
-    private Vector2 moveDir;
-    private bool isOnGround=false;
-
-    public Transform groundPoint;
+    private Collision coll;
+    public SpriteRenderer theSR;
     public Animator anim;
-    public LayerMask whatIsGround;
-    public float moveSpeed;
-    public float jumpForce;
-    public bool canDoubleJump;
+    public GhostTrail trail;
 
+    [Space]
+    [Header("Stats")]
+    private Vector2 moveDir;
+
+    public bool canMove;
+    public float moveSpeed;
+
+    [Space]
+    [Header("Wall")]
+    public bool wallGrab;
+    public bool wallJumped;
+    public bool wallSlide;
+    public float slideSpeed = 5;
+    public float wallJumpLerp = 10;
+
+    [Space]
+    [Header("Jump")]
+    public float jumpForce;
+    public float fallMultiplier = 2.5f;
+    public float lowJumpMultiplier = 2f;
+    private bool isJumping;
+    private bool canDoubleJump;
+
+    [Space]
+    [Header("Bullet")]
     public BulletController shotToFire;
     public Transform shotPoint;
 
-    private float dashCounter;
+    [Space]
+    [Header("Dash")]
     public float dashSpeed;
-    public float dashTime;
+    private bool hasDashed;
+    private bool isDashing;
 
-    private float afterImgCounter;
-    private float dashRechargeCounter;
-    public SpriteRenderer theSR;
-    public SpriteRenderer afterImg;
-    public Color afterImgColor;
-    public float afterImgLifetime;
-    public float timeBetweenAfterImgs;
-    public float waitAfterDashing=0.25f;
-
+    [Space]
+    [Header("Ball")]
     private float ballCounter;
+    private SpriteRenderer ballSR;
+
+    [Space]
+    [Header("Bomb")]
     public GameObject standing;
     public GameObject ball;
     public GameObject bomb;
@@ -43,25 +64,38 @@ public class PlayerController : MonoBehaviour
     public Transform bombPoint;
     public float waitToBall;
 
+    [Space]
+    [Header("Particle")]
+    public ParticleSystem dashParticle;
+    public ParticleSystem jumpParticle;
+    public ParticleSystem wallJumpParticle;
+    public ParticleSystem slideParticle;
+
     private void Awake()
     {
         theRB = GetComponent<Rigidbody2D>();
-        abilitiy=GetComponent<PlayerAbilityTracker>();
+        abilitiy = GetComponent<PlayerAbilityTracker>();
+        coll=GetComponent<Collision>();
+        ballSR= ball.GetComponent<SpriteRenderer>();
     }
 
-    void Start()
+    private void Start()
     {
         input.MoveEvent += OnMove;
         input.MoveCanceledEvent += OnMoveCanceled;
         input.JumpEvent += OnJump;
+        input.JumpCanceledEvent += OnJumpCanceled;
         input.FireEvent += OnFire;
         input.DashEvent += OnDash;
+        input.WallGrabEvent += OnWallGrab;
+        input.WallGrabCanceledEvent += OnWallGrabCanceled;
+
+        coll.GroundTouchEvent += OnGroundTouch;
+        coll.WallOutEvent += OnWallGrabCanceled;
     }
 
     void Update()
     {
-        dashRechargeCounter-=Time.deltaTime;
-
         if (abilitiy.canBecomeBall)
         {
             if (!ball.activeSelf &&
@@ -89,34 +123,38 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (dashCounter > 0)
+        Walk();
+        if (wallGrab && 
+            !isDashing)
         {
-            dashCounter -= Time.deltaTime;
-            theRB.velocity = new Vector2(dashSpeed * transform.localScale.x, theRB.velocity.y);
-            afterImgCounter-=Time.deltaTime;
-            if (afterImgCounter>=0)
+            theRB.gravityScale = 0;
+            if (moveDir.x > .2f || moveDir.x < -.2f)
             {
-                ShowAfterImage();
+                theRB.velocity = new Vector2(theRB.velocity.x, 0);
             }
-            dashRechargeCounter=waitAfterDashing;
+            float speedModifier = moveDir.y > 0 ? .5f : 1;
+            theRB.velocity = new Vector2(theRB.velocity.x, moveDir.y * (moveSpeed * speedModifier));
         }
         else
         {
-            theRB.velocity = new Vector2(moveDir.x * moveSpeed, theRB.velocity.y);
-            if (theRB.velocity.x < 0)
-            {
-                transform.localScale = new Vector3(-1f, 1f, 1f);
-            }
-            else if (theRB.velocity.x > 0)
-            {
-                transform.localScale = Vector3.one;
-            }
+            theRB.gravityScale = 3;
         }
-        isOnGround = Physics2D.OverlapCircle(groundPoint.position, 0.2f, whatIsGround);
+
+        WallSlide();
+
+        if (theRB.velocity.y < 0)
+        {
+            theRB.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+        }
+        else if (theRB.velocity.y > 0 && !isJumping)
+        {
+            theRB.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+        }
     }
 
     private void LateUpdate()
     {
+        WallParticle(moveDir.y);
         UpdateAnim();
     }
 
@@ -132,16 +170,27 @@ public class PlayerController : MonoBehaviour
 
     private void OnJump()
     {
-        if (isOnGround||
-            (canDoubleJump&&abilitiy.canDoubleJump))
+        if (coll.onGround ||
+            (canDoubleJump && abilitiy.canDoubleJump))
         {
-            canDoubleJump = isOnGround;
+            canDoubleJump = coll.onGround;
             if (!canDoubleJump)
             {
                 anim.SetTrigger("doubleJump");
             }
-            theRB.velocity = new Vector2(theRB.velocity.x, jumpForce);
+            isJumping = true;
+            Jump(Vector2.up, false);
         }
+        if (coll.onWall && 
+            !coll.onGround)
+        {
+            WallJump();
+        }
+    }
+
+    private void OnJumpCanceled()
+    {
+        isJumping = false;
     }
 
     private void OnFire()
@@ -152,29 +201,187 @@ public class PlayerController : MonoBehaviour
             bullet.moveDir = new Vector2(transform.localScale.x, 0f);
             anim.SetTrigger("shotFired");
         }
-        else if (ball.activeSelf&&abilitiy.canDropBomb) 
+        else if (ball.activeSelf && abilitiy.canDropBomb)
         {
-            Instantiate(bomb,bombPoint.position, bombPoint.rotation);
+            Instantiate(bomb, bombPoint.position, bombPoint.rotation);
         }
     }
 
     private void OnDash()
     {
-        if (dashRechargeCounter>0||
-            !standing.activeSelf||
+        if (!standing.activeSelf ||
+            hasDashed||
+            isDashing||
             !abilitiy.canDash)
         {
             return;
         }
-        dashCounter = dashTime;
-        ShowAfterImage();
+        Camera.main.transform.DOComplete();
+        Camera.main.transform.DOShakePosition(.2f, .5f, 14, 90, false, true);
+        FindObjectOfType<RippleEffect>().Emit(Camera.main.WorldToViewportPoint(transform.position));
+        hasDashed = true;
+        theRB.velocity = Vector2.zero;
+        theRB.velocity += moveDir * dashSpeed;
+        StartCoroutine(DashWait());
+    }
+
+    private void OnWallGrab()
+    {
+        if (!coll.onWall ||
+            !standing.activeSelf ||
+            !canMove)
+        {
+            return;
+        }
+        if (transform.localScale.x != coll.wallSide)
+        {
+            Flip((int)(transform.localScale.x * -1));
+        }
+        wallGrab = true;
+        wallSlide = false;
+    }
+
+    private void OnWallGrabCanceled()
+    {
+        wallGrab = false;
+        if (!coll.onWall ||
+            !canMove)
+        {
+            wallSlide = false;
+        }
+    }
+
+    private void OnGroundTouch()
+    {
+        hasDashed = false;
+        isDashing = false;
+        jumpParticle.Play();
+    }
+
+    private void Walk() 
+    {
+        if (!canMove ||
+           wallGrab)
+        {
+            return;
+        }
+        if (!wallJumped)
+        {
+            theRB.velocity = new Vector2(moveDir.x * moveSpeed, theRB.velocity.y);
+        }
+        else
+        {
+            theRB.velocity = Vector2.Lerp(
+                theRB.velocity, (new Vector2(moveDir.x * moveSpeed, theRB.velocity.y)), wallJumpLerp * Time.deltaTime);
+        }
+        if (theRB.velocity.x < 0)
+        {
+            Flip(-1);
+        }
+        else if (theRB.velocity.x > 0)
+        {
+            Flip(1);
+        }
+    }
+
+    private void Jump(Vector2 dir, bool wall)
+    {
+        slideParticle.transform.parent.localScale = new Vector3(ParticleSide(), 1, 1);
+        ParticleSystem particle = wall ? wallJumpParticle : jumpParticle;
+        theRB.velocity = new Vector2(theRB.velocity.x, 0);
+        theRB.velocity += dir * jumpForce;
+        particle.Play();
+    }
+
+    private void WallSlide()
+    {
+        wallSlide = coll.onWall && !coll.onGround&& standing.activeSelf;
+        if (!wallSlide||
+            moveDir.x==0||
+            wallGrab)
+        {
+            return ;
+        }
+        if (coll.wallSide != transform.localScale.x)
+        {
+            Flip((int)(transform.localScale.x * -1));
+        }
+        if (!canMove)
+        {
+            return;
+        }
+        bool pushingWall = (theRB.velocity.x > 0 && coll.onRightWall) || (theRB.velocity.x < 0 && coll.onLeftWall);
+        float push = pushingWall ? 0 : theRB.velocity.x;
+        theRB.velocity = new Vector2(push, -slideSpeed);
+        anim.ResetTrigger("doubleJump");
+    }
+
+    private void WallJump()
+    {
+        if ((transform.localScale.x == 1 && coll.onRightWall) || 
+            transform.localScale.x == -1 && !coll.onRightWall)
+        {
+            Flip((int)(transform.localScale.x * -1));
+        }
+        StopCoroutine(DisableMovement(0));
+        StartCoroutine(DisableMovement(.1f));
+        Vector2 wallDir = coll.onRightWall ? Vector2.left : Vector2.right;
+        Jump((Vector2.up / 1.5f + wallDir / 1.5f), true);
+        wallJumped = true;
+    }
+
+    private void WallParticle(float vertical)
+    {
+        var main = slideParticle.main;
+        if (wallSlide ||
+            (wallGrab && vertical < 0))
+        {
+            main.startColor = Color.white;
+        }
+        else
+        {
+            main.startColor = Color.clear;
+        }
+    }
+
+    IEnumerator DashWait()
+    {
+        trail.ShowGhost();
+        StartCoroutine(GroundDash());
+        DOVirtual.Float(14, 0, .8f, RigidbodyDrag);
+        dashParticle.Play();
+        theRB.gravityScale = 0;
+        wallJumped = true;
+        isDashing = true;
+        yield return new WaitForSeconds(1f);
+
+        dashParticle.Stop();
+        theRB.gravityScale = 3;
+        wallJumped = false;
+        isDashing = false;
+    }
+
+    IEnumerator GroundDash()
+    {
+        yield return new WaitForSeconds(.15f);
+        hasDashed = !coll.onGround;
+    }
+
+    private void RigidbodyDrag(float x)
+    {
+        theRB.drag = x;
+    }
+
+    private int ParticleSide()
+    {
+        return coll.onRightWall ? 1 : -1;
     }
 
     private void UpdateAnim()
     {
         if (standing.activeSelf)
         {
-            anim.SetBool("isOnGround", isOnGround);
+            anim.SetBool("isOnGround", coll.onGround);
             anim.SetFloat("speed", Mathf.Abs(theRB.velocity.x));
         }
         if (ball.activeSelf)
@@ -183,13 +390,38 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void ShowAfterImage() 
+    public void Flip(int side)
     {
-        SpriteRenderer image= Instantiate(afterImg,transform.position,transform.rotation);
-        image.sprite = theSR.sprite;
-        image.transform.localScale=transform.localScale;
-        image.color=afterImgColor;
-        Destroy(image.gameObject, afterImgLifetime);
-        afterImgCounter = timeBetweenAfterImgs;
+        if (wallGrab || 
+            wallSlide)
+        {
+            if (side == -1 &&
+                transform.localScale.x==-1f)
+            {
+                return;
+            }
+            if (side == 1 &&
+                transform.localScale.x == 1f)
+            {
+                return;
+            }
+        }
+        transform.localScale = new Vector3(side, 1f, 1f);
+    }
+
+    public SpriteRenderer GetCurSprite()
+    {
+        if (standing.activeSelf)
+        {
+            return theSR;
+        }
+        return ballSR;
+    }
+
+    IEnumerator DisableMovement(float time)
+    {
+        canMove = false;
+        yield return new WaitForSeconds(time);
+        canMove = true;
     }
 }

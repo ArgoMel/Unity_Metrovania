@@ -17,6 +17,8 @@ public class InputRender : ScriptableObject
     public event Action JumpCanceledEvent;
     public event Action FireEvent;
     public event Action DashEvent;
+    public event Action WallGrabEvent;
+    public event Action WallGrabCanceledEvent;
 
     public event Action QuitMenuEvent;
 
@@ -77,6 +79,18 @@ public class InputRender : ScriptableObject
         if (context.phase == InputActionPhase.Performed)
         {
             DashEvent?.Invoke();
+        }
+    }
+
+    public void OnWallGrab(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            WallGrabEvent?.Invoke();
+        }
+        if (context.phase == InputActionPhase.Canceled)
+        {
+            WallGrabCanceledEvent?.Invoke();
         }
     }
 
