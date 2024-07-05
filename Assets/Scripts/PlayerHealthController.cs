@@ -6,26 +6,89 @@ public class PlayerHealthController : MonoBehaviour
 {
     public static PlayerHealthController instance;
 
-    /*[HideInInspector]*/ public int curHealth;
+    public int curHealth;
     public int maxHealth;
+
+    public SpriteRenderer[] playerSprites;
+    public float invincibilityLength;
+    public float flashLength;
+    private float flashCounter;
+    private float invincCounter;
 
     private void Awake()
     {
-        instance = this;    
+        if (!instance) 
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else 
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void Start()
     {
-        curHealth = maxHealth;
+        ResetHealth();
+    }
+
+    private void Update()
+    {
+        if (invincCounter > 0)
+        {
+            invincCounter-=Time.deltaTime;
+            flashCounter-=Time.deltaTime;
+            if (flashCounter<=0)
+            {
+                foreach (var sr in playerSprites)
+                {
+                    sr.enabled = !sr.enabled;
+                }
+                flashCounter = flashLength;
+            }
+            if(invincCounter <= 0) 
+            {
+                foreach (var sr in playerSprites)
+                {
+                    sr.enabled = true;
+                }
+                flashCounter = 0;
+            }
+        }
     }
 
     public void DamagePlayer(int damageAmount) 
     {
+        if (invincCounter>0)
+        {
+            return;
+        }
         curHealth-=damageAmount;
         if (curHealth<=0)
         {
             curHealth=0;
-            gameObject.SetActive(false);    
+            RespawnController.instance.Respawn();
         }
+        else 
+        {
+            invincCounter=invincibilityLength;
+        }
+        UIController.instance.UpdateHealth(curHealth, maxHealth);
+    }
+
+    public void ModifyHealth(int healAmount) 
+    {
+        curHealth += healAmount;
+        if (curHealth>maxHealth)
+        {
+            curHealth = maxHealth;  
+        }
+        UIController.instance.UpdateHealth(curHealth, maxHealth);
+    }
+
+    public void ResetHealth() 
+    {
+        ModifyHealth(maxHealth);
     }
 }
