@@ -18,10 +18,10 @@ public class PlayerController : MonoBehaviour
 
     [Space]
     [Header("Stats")]
-    private Vector2 moveDir;
-
     public bool canMove;
     public float moveSpeed;
+
+    private Vector2 moveDir;
 
     [Space]
     [Header("Wall")]
@@ -92,6 +92,8 @@ public class PlayerController : MonoBehaviour
 
         coll.GroundTouchEvent += OnGroundTouch;
         coll.WallOutEvent += OnWallGrabCanceled;
+
+        canMove = true;
     }
 
     void Update()
@@ -170,6 +172,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnJump()
     {
+        if (!canMove)
+        {
+            return;
+        }
         if (coll.onGround ||
             (canDoubleJump && abilitiy.canDoubleJump))
         {
@@ -195,6 +201,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnFire()
     {
+        if (!canMove)
+        {
+            return;
+        }
         if (standing.activeSelf)
         {
             BulletController bullet = Instantiate(shotToFire, shotPoint.position, shotPoint.rotation);
@@ -212,7 +222,8 @@ public class PlayerController : MonoBehaviour
         if (!standing.activeSelf ||
             hasDashed||
             isDashing||
-            !abilitiy.canDash)
+            !abilitiy.canDash||
+            !canMove)
         {
             return;
         }
@@ -416,6 +427,13 @@ public class PlayerController : MonoBehaviour
             return theSR;
         }
         return ballSR;
+    }
+
+    public void StopMove(bool isStop)
+    {
+        canMove = !isStop;
+        theRB.velocity = Vector3.zero;
+        anim.enabled = !isStop;
     }
 
     IEnumerator DisableMovement(float time)
