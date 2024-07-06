@@ -26,5 +26,9 @@ public class CameraController : MonoBehaviour
                Mathf.Clamp(player.transform.position.y, boundBox.bounds.min.y+ halfHeight, boundBox.bounds.max.y- halfHeight), 
                 transform.position.z);
         }
+        else 
+        {
+            player = FindObjectOfType<PlayerController>();
+        }
     }
 }

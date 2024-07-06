@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour
     private Collision coll;
     public SpriteRenderer theSR;
     public Animator anim;
-    public GhostTrail trail;
 
     [Space]
     [Header("Stats")]
@@ -47,6 +46,7 @@ public class PlayerController : MonoBehaviour
     [Space]
     [Header("Dash")]
     public float dashSpeed;
+    private GhostTrail trail;
     private bool hasDashed;
     private bool isDashing;
 
@@ -93,6 +93,7 @@ public class PlayerController : MonoBehaviour
         coll.GroundTouchEvent += OnGroundTouch;
         coll.WallOutEvent += OnWallGrabCanceled;
 
+        trail = FindObjectOfType<GhostTrail>();
         canMove = true;
     }
 
