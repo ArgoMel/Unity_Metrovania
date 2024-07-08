@@ -81,6 +81,15 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        coll.GroundTouchEvent += OnGroundTouch;
+        coll.WallOutEvent += OnWallGrabCanceled;
+
+        trail = FindObjectOfType<GhostTrail>();
+        canMove = true;
+    }
+
+    private void OnEnable()
+    {
         input.MoveEvent += OnMove;
         input.MoveCanceledEvent += OnMoveCanceled;
         input.JumpEvent += OnJump;
@@ -91,14 +100,19 @@ public class PlayerController : MonoBehaviour
         input.WallGrabCanceledEvent += OnWallGrabCanceled;
         input.PauseEvent += OnPause;
         input.SetGamePlay();
+    }
 
-        coll.GroundTouchEvent += OnGroundTouch;
-        coll.WallOutEvent += OnWallGrabCanceled;
-
-        trail = FindObjectOfType<GhostTrail>();
-        canMove = true;
-
-        Debug.Log("Player Start");
+    private void OnDisable()
+    {
+        input.MoveEvent -= OnMove;
+        input.MoveCanceledEvent -= OnMoveCanceled;
+        input.JumpEvent -= OnJump;
+        input.JumpCanceledEvent -= OnJumpCanceled;
+        input.FireEvent -= OnFire;
+        input.DashEvent -= OnDash;
+        input.WallGrabEvent -= OnWallGrab;
+        input.WallGrabCanceledEvent -= OnWallGrabCanceled;
+        input.PauseEvent -= OnPause;
     }
 
     void Update()
