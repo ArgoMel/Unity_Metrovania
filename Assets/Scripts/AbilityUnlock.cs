@@ -17,7 +17,12 @@ public class AbilityUnlock : MonoBehaviour
     public GameObject pickup;
     public PlayerAbility unlockAbility;
     public string unlockMessage;
-    public TMP_Text unlockText;
+    private TMP_Text unlockText;
+
+    private void Awake()
+    {
+        unlockText=GetComponentInChildren<TMP_Text>(true);
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
