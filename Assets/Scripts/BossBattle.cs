@@ -37,6 +37,7 @@ public class BossBattle : MonoBehaviour
 
         activeCounter = 0.5f;
         shotCounter = timeBetweenShot1;
+        AudioManager.instance.PlayMusic(1);
     }
 
     private void Update()
@@ -56,6 +57,7 @@ public class BossBattle : MonoBehaviour
                 }
                 theCam.enabled=true;
                 gameObject.SetActive(false);
+                AudioManager.instance.PlayMusic(2);
             }
             return;
         }

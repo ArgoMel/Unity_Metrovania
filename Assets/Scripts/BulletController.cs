@@ -29,6 +29,7 @@ public class BulletController : MonoBehaviour
         {
             Instantiate(impactEffect, transform.position, Quaternion.identity);
         }
+        AudioManager.instance.PlaySFXWithRandomPitch(3);
         Destroy(gameObject);
     }
 

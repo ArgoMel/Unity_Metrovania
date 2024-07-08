@@ -20,6 +20,8 @@ public class BossBullet : MonoBehaviour
         Vector3 dir = transform.position - PlayerHealthController.instance.transform.position;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+        AudioManager.instance.PlaySFXWithRandomPitch(2);
     }
 
     private void Update()
@@ -38,5 +40,6 @@ public class BossBullet : MonoBehaviour
             Instantiate(impactEffect,transform.position,transform.rotation);
         }
         Destroy(gameObject);
+        AudioManager.instance.PlaySFXWithRandomPitch(3);
     }
 }

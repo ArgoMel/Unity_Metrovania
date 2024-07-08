@@ -710,7 +710,6 @@ GameObject:
   - component: {fileID: 1870830651568283634}
   - component: {fileID: 1904104366460064217}
   - component: {fileID: 1725039240950547279}
-  - component: {fileID: 7041668075369907296}
   m_Layer: 5
   m_Name: UICanvas
   m_TagString: Untagged
@@ -821,19 +820,6 @@ MonoBehaviour:
   pauseScreen: {fileID: 3023669319377614407}
   fadeScreen: {fileID: 7372692799253704408}
   fadeSpeed: 2
---- !u!114 &7041668075369907296
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8896182779828146620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b320a2f033a0ea145974909a63d84637, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  newGameScene: Main Menu
 --- !u!1001 &3834605020196318807
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -937,7 +923,7 @@ PrefabInstance:
     - target: {fileID: 4832561955638907995, guid: fee13b31db057384eb6069cd2a976c35, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 7041668075369907296}
+      objectReference: {fileID: 1725039240950547279}
     - target: {fileID: 4832561955638907995, guid: fee13b31db057384eb6069cd2a976c35, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -948,7 +934,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4832561955638907995, guid: fee13b31db057384eb6069cd2a976c35, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: MainMenu, Assembly-CSharp
+      value: UIController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4832561955638907995, guid: fee13b31db057384eb6069cd2a976c35, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName

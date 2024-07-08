@@ -111,6 +111,7 @@ public class PlayerController : MonoBehaviour
                 {
                     ball.SetActive(true);
                     standing.SetActive(false);
+                    AudioManager.instance.PlaySFX(6);
                 }
             }
             else if (ball.activeSelf &&
@@ -121,6 +122,7 @@ public class PlayerController : MonoBehaviour
                 {
                     ball.SetActive(false);
                     standing.SetActive(true);
+                    AudioManager.instance.PlaySFX(10);
                 }
             }
         }
@@ -186,6 +188,7 @@ public class PlayerController : MonoBehaviour
             if (!canDoubleJump)
             {
                 anim.SetTrigger("doubleJump");
+                AudioManager.instance.PlaySFXWithRandomPitch(9);
             }
             isJumping = true;
             Jump(Vector2.up, false);
@@ -213,10 +216,12 @@ public class PlayerController : MonoBehaviour
             BulletController bullet = Instantiate(shotToFire, shotPoint.position, shotPoint.rotation);
             bullet.moveDir = new Vector2(transform.localScale.x, 0f);
             anim.SetTrigger("shotFired");
+            AudioManager.instance.PlaySFXWithRandomPitch(14);
         }
         else if (ball.activeSelf && abilitiy.canDropBomb)
         {
             Instantiate(bomb, bombPoint.position, bombPoint.rotation);
+            AudioManager.instance.PlaySFXWithRandomPitch(13);
         }
     }
 
@@ -237,6 +242,7 @@ public class PlayerController : MonoBehaviour
         theRB.velocity = Vector2.zero;
         theRB.velocity += moveDir * dashSpeed;
         StartCoroutine(DashWait());
+        AudioManager.instance.PlaySFXWithRandomPitch(7);
     }
 
     private void OnWallGrab()
@@ -310,6 +316,7 @@ public class PlayerController : MonoBehaviour
         theRB.velocity = new Vector2(theRB.velocity.x, 0);
         theRB.velocity += dir * jumpForce;
         particle.Play();
+        AudioManager.instance.PlaySFX(12);
     }
 
     private void WallSlide()

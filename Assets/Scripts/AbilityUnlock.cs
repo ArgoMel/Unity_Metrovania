@@ -39,7 +39,8 @@ public class AbilityUnlock : MonoBehaviour
             unlockText.text= unlockMessage; 
             unlockText.gameObject.SetActive(true); 
             Destroy(unlockText.transform.parent.gameObject,5f);    
-            Destroy(gameObject);    
+            Destroy(gameObject);
+            AudioManager.instance.PlaySFX(5);
         }
     }
 }

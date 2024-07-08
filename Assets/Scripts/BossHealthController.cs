@@ -32,7 +32,12 @@ public class BossHealthController : MonoBehaviour
         if (curHealth<=0)
         {
             curHealth = 0;
+            AudioManager.instance.PlaySFX(0);
             theBoss.EndBattle();
+        }
+        else 
+        {
+            AudioManager.instance.PlaySFX(1);
         }
         bossHealthSlider.value = curHealth; 
     }

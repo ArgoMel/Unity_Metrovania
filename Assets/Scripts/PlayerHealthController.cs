@@ -30,7 +30,6 @@ public class PlayerHealthController : MonoBehaviour
 
     private void Start()
     {
-        ResetHealth();
     }
 
     private void Update()
@@ -69,10 +68,12 @@ public class PlayerHealthController : MonoBehaviour
         {
             curHealth=0;
             RespawnController.instance.Respawn();
+            AudioManager.instance.PlaySFX(8);
         }
         else 
         {
             invincCounter=invincibilityLength;
+            AudioManager.instance.PlaySFXWithRandomPitch(11);
         }
         UIController.instance.UpdateHealth(curHealth, maxHealth);
     }

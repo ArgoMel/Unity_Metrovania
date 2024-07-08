@@ -34,6 +34,8 @@ public class UIController : MonoBehaviour
     private void Start()
     {
         input.ResumeEvent += TogglePause;
+
+        PlayerHealthController.instance.ResetHealth();  
     }
 
     private void Update()
@@ -97,5 +99,11 @@ public class UIController : MonoBehaviour
         instance = null;
         Destroy(gameObject);
         SceneManager.LoadScene("Main Menu");
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+        Debug.Log("게임종료");
     }
 }
