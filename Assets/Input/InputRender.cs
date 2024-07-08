@@ -38,14 +38,14 @@ public class InputRender : ScriptableObject
     {
         gameInput.Player.Enable();
         gameInput.UI.Disable();
-        Debug.Log("SetGamePlay");
+       // Debug.Log("SetGamePlay");
     }
 
     public void SetUI()
     {
         gameInput.Player.Disable();
         gameInput.UI.Enable();
-        Debug.Log("SetUI");
+       // Debug.Log("SetUI");
     }
 
     public void OnJump(InputAction.CallbackContext context)

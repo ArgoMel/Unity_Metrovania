@@ -4,14 +4,23 @@ using UnityEngine;
 
 public class BossActivator : MonoBehaviour
 {
-    public GameObject bossToActivate;
+    public BossBattle bossToActivate;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag=="Player")
         {
-            bossToActivate.SetActive(true);
-            gameObject.SetActive(false);
+            if (PlayerPrefs.HasKey(bossToActivate.bossRef) &&
+                PlayerPrefs.GetInt(bossToActivate.bossRef) == 1)
+            {
+                bossToActivate.gameObject.SetActive(false);
+                gameObject.SetActive(true);
+            }
+            else
+            {
+                bossToActivate.gameObject.SetActive(true);
+                gameObject.SetActive(false);
+            }
         }
     }
 }

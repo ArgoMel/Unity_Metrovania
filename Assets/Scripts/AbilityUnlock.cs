@@ -32,6 +32,7 @@ public class AbilityUnlock : MonoBehaviour
             if (player!=null) 
             {
                 player.UnlockAbility(unlockAbility);
+                PlayerPrefs.SetInt(unlockAbility.ToString(), 1);
             }
             Instantiate(pickup,transform.position,transform.rotation);
             unlockText.transform.parent.SetParent(null);

@@ -10,6 +10,7 @@ public class BossBattle : MonoBehaviour
     public Transform shotPoint;
     public GameObject bullet;
     public GameObject winObj;
+    public string bossRef;
     public int threshold1;
     public int threshold2;
     public float camSpeed;
@@ -58,6 +59,7 @@ public class BossBattle : MonoBehaviour
                 theCam.enabled=true;
                 gameObject.SetActive(false);
                 AudioManager.instance.PlayMusic(2);
+                PlayerPrefs.SetInt(bossRef,1);
             }
             return;
         }

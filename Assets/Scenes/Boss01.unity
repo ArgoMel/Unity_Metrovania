@@ -697,6 +697,7 @@ MonoBehaviour:
   shotPoint: {fileID: 1210720831}
   bullet: {fileID: 2414266781084854109, guid: 796d8db19dc9e8e429eb0c67bbf31ccd, type: 3}
   winObj: {fileID: 2082577177}
+  bossRef: Phantom
   threshold1: 25
   threshold2: 10
   camSpeed: 5
@@ -2309,7 +2310,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba5a1a49b715d98418ad73a5eb37f93d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bossToActivate: {fileID: 537695999}
+  bossToActivate: {fileID: 537696001}
 --- !u!1 &1684411910
 GameObject:
   m_ObjectHideFlags: 0

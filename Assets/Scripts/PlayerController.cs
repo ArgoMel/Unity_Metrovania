@@ -97,6 +97,8 @@ public class PlayerController : MonoBehaviour
 
         trail = FindObjectOfType<GhostTrail>();
         canMove = true;
+
+        Debug.Log("Player Start");
     }
 
     void Update()

@@ -34,8 +34,6 @@ public class UIController : MonoBehaviour
     private void Start()
     {
         input.ResumeEvent += TogglePause;
-
-        PlayerHealthController.instance.ResetHealth();  
     }
 
     private void Update()
@@ -91,7 +89,7 @@ public class UIController : MonoBehaviour
 
     public void GoToMainMenu() 
     {
-        Time.timeScale = 1f;
+        TogglePause();
         Destroy(PlayerHealthController.instance.gameObject);
         PlayerHealthController.instance = null;
         Destroy(RespawnController.instance.gameObject);

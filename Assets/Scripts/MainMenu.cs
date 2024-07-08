@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
@@ -30,6 +31,15 @@ public class MainMenu : MonoBehaviour
                 PlayerPrefs.GetFloat("PlayerPosY"),
                 PlayerPrefs.GetFloat("PlayerPosZ")
             ) ;
+        for (int i=0;i<(int)PlayerAbility.End;++i)
+        {
+            string key= ((PlayerAbility)i).ToString();
+            if (PlayerPrefs.HasKey(key)&&
+                PlayerPrefs.GetInt(key)==1)
+            {
+                player.UnlockAbility((PlayerAbility)i);
+            }
+        }
         SceneManager.LoadScene(PlayerPrefs.GetString("ContinueLevel"));
     }
 
