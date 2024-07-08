@@ -20,7 +20,8 @@ public class InputRender : ScriptableObject
     public event Action WallGrabEvent;
     public event Action WallGrabCanceledEvent;
 
-    public event Action QuitMenuEvent;
+    public event Action PauseEvent;
+    public event Action ResumeEvent;
 
     private void OnEnable()
     {
@@ -37,12 +38,14 @@ public class InputRender : ScriptableObject
     {
         gameInput.Player.Enable();
         gameInput.UI.Disable();
+        Debug.Log("SetGamePlay");
     }
 
     public void SetUI()
     {
         gameInput.Player.Disable();
         gameInput.UI.Enable();
+        Debug.Log("SetUI");
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -94,12 +97,19 @@ public class InputRender : ScriptableObject
         }
     }
 
-    public void OnQuitMenu(InputAction.CallbackContext context)
+    public void OnPause(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
         {
-            QuitMenuEvent?.Invoke();
-            SetGamePlay();
+            PauseEvent?.Invoke();
+        }
+    }
+
+    public void OnResume(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            ResumeEvent?.Invoke();
         }
     }
 }

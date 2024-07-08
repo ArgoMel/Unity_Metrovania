@@ -49,6 +49,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "d45a7c6b-51ab-4970-8284-d4cd3539c716",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -150,6 +159,17 @@
                     "action": "WallGrab",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "96b75dc1-0c14-4776-ad01-5aae0fc084b9",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -158,9 +178,9 @@
             "id": "34907b3e-d8a9-4057-b2af-4b2bbbe1077d",
             "actions": [
                 {
-                    "name": "QuitMenu",
+                    "name": "Resume",
                     "type": "Button",
-                    "id": "037b3aab-57e4-4350-8f7d-336bbe932de8",
+                    "id": "4b30c5b1-4443-4aad-9515-98b22a6850de",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -170,12 +190,12 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "1074af81-428e-4469-a812-d98582048df9",
-                    "path": "",
+                    "id": "c9800ab5-455c-4b7d-a3d4-4a8c79fc82a4",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "QuitMenu",
+                    "action": "Resume",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -89,6 +89,8 @@ public class PlayerController : MonoBehaviour
         input.DashEvent += OnDash;
         input.WallGrabEvent += OnWallGrab;
         input.WallGrabCanceledEvent += OnWallGrabCanceled;
+        input.PauseEvent += OnPause;
+        input.SetGamePlay();
 
         coll.GroundTouchEvent += OnGroundTouch;
         coll.WallOutEvent += OnWallGrabCanceled;
@@ -268,6 +270,11 @@ public class PlayerController : MonoBehaviour
         hasDashed = false;
         isDashing = false;
         jumpParticle.Play();
+    }
+
+    private void OnPause()
+    {
+        UIController.instance.TogglePause();
     }
 
     private void Walk() 

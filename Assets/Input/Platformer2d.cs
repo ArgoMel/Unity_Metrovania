@@ -71,6 +71,15 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""d45a7c6b-51ab-4970-8284-d4cd3539c716"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -172,6 +181,17 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
                     ""action"": ""WallGrab"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""96b75dc1-0c14-4776-ad01-5aae0fc084b9"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -180,9 +200,9 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
             ""id"": ""34907b3e-d8a9-4057-b2af-4b2bbbe1077d"",
             ""actions"": [
                 {
-                    ""name"": ""QuitMenu"",
+                    ""name"": ""Resume"",
                     ""type"": ""Button"",
-                    ""id"": ""037b3aab-57e4-4350-8f7d-336bbe932de8"",
+                    ""id"": ""4b30c5b1-4443-4aad-9515-98b22a6850de"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -192,12 +212,12 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""1074af81-428e-4469-a812-d98582048df9"",
-                    ""path"": """",
+                    ""id"": ""c9800ab5-455c-4b7d-a3d4-4a8c79fc82a4"",
+                    ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""QuitMenu"",
+                    ""action"": ""Resume"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -213,9 +233,10 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_WallGrab = m_Player.FindAction("WallGrab", throwIfNotFound: true);
+        m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
-        m_UI_QuitMenu = m_UI.FindAction("QuitMenu", throwIfNotFound: true);
+        m_UI_Resume = m_UI.FindAction("Resume", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -282,6 +303,7 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_WallGrab;
+    private readonly InputAction m_Player_Pause;
     public struct PlayerActions
     {
         private @Platformer2d m_Wrapper;
@@ -291,6 +313,7 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @WallGrab => m_Wrapper.m_Player_WallGrab;
+        public InputAction @Pause => m_Wrapper.m_Player_Pause;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -315,6 +338,9 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
             @WallGrab.started += instance.OnWallGrab;
             @WallGrab.performed += instance.OnWallGrab;
             @WallGrab.canceled += instance.OnWallGrab;
+            @Pause.started += instance.OnPause;
+            @Pause.performed += instance.OnPause;
+            @Pause.canceled += instance.OnPause;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -334,6 +360,9 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
             @WallGrab.started -= instance.OnWallGrab;
             @WallGrab.performed -= instance.OnWallGrab;
             @WallGrab.canceled -= instance.OnWallGrab;
+            @Pause.started -= instance.OnPause;
+            @Pause.performed -= instance.OnPause;
+            @Pause.canceled -= instance.OnPause;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -355,12 +384,12 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
     // UI
     private readonly InputActionMap m_UI;
     private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
-    private readonly InputAction m_UI_QuitMenu;
+    private readonly InputAction m_UI_Resume;
     public struct UIActions
     {
         private @Platformer2d m_Wrapper;
         public UIActions(@Platformer2d wrapper) { m_Wrapper = wrapper; }
-        public InputAction @QuitMenu => m_Wrapper.m_UI_QuitMenu;
+        public InputAction @Resume => m_Wrapper.m_UI_Resume;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -370,16 +399,16 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_UIActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_UIActionsCallbackInterfaces.Add(instance);
-            @QuitMenu.started += instance.OnQuitMenu;
-            @QuitMenu.performed += instance.OnQuitMenu;
-            @QuitMenu.canceled += instance.OnQuitMenu;
+            @Resume.started += instance.OnResume;
+            @Resume.performed += instance.OnResume;
+            @Resume.canceled += instance.OnResume;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
         {
-            @QuitMenu.started -= instance.OnQuitMenu;
-            @QuitMenu.performed -= instance.OnQuitMenu;
-            @QuitMenu.canceled -= instance.OnQuitMenu;
+            @Resume.started -= instance.OnResume;
+            @Resume.performed -= instance.OnResume;
+            @Resume.canceled -= instance.OnResume;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -404,9 +433,10 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
         void OnFire(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
         void OnWallGrab(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
-        void OnQuitMenu(InputAction.CallbackContext context);
+        void OnResume(InputAction.CallbackContext context);
     }
 }

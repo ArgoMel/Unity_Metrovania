@@ -124,5 +124,9 @@ MonoBehaviour:
   whatIsDestucable:
     serializedVersion: 2
     m_Bits: 512
+  whatIsDamageable:
+    serializedVersion: 2
+    m_Bits: 8192
+  damageAmount: 3
   timeToExplode: 0.5
   blastRange: 1.5
