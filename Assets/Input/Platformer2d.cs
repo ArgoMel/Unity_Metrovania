@@ -80,6 +80,33 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenWorldMap"",
+                    ""type"": ""Button"",
+                    ""id"": ""041d7d8f-3a5a-4f52-b518-be92107a6163"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ZoomInMap"",
+                    ""type"": ""Button"",
+                    ""id"": ""2290cdc7-2294-4a4a-866e-8cc89e88bac6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ZoomOutMap"",
+                    ""type"": ""Button"",
+                    ""id"": ""5db28104-6deb-42ad-9f0a-2fd6f13b207a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -192,6 +219,39 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2bad8bf5-dc67-42a2-9c74-57b368a17f28"",
+                    ""path"": ""<Keyboard>/#(M)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenWorldMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""05a43e78-728a-4e7d-8041-ac91df88c95d"",
+                    ""path"": ""<Keyboard>/#(E)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomInMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""baafabac-7731-4e3f-9616-cca4830a37e2"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomOutMap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -234,6 +294,9 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_WallGrab = m_Player.FindAction("WallGrab", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+        m_Player_OpenWorldMap = m_Player.FindAction("OpenWorldMap", throwIfNotFound: true);
+        m_Player_ZoomInMap = m_Player.FindAction("ZoomInMap", throwIfNotFound: true);
+        m_Player_ZoomOutMap = m_Player.FindAction("ZoomOutMap", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Resume = m_UI.FindAction("Resume", throwIfNotFound: true);
@@ -304,6 +367,9 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_WallGrab;
     private readonly InputAction m_Player_Pause;
+    private readonly InputAction m_Player_OpenWorldMap;
+    private readonly InputAction m_Player_ZoomInMap;
+    private readonly InputAction m_Player_ZoomOutMap;
     public struct PlayerActions
     {
         private @Platformer2d m_Wrapper;
@@ -314,6 +380,9 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @WallGrab => m_Wrapper.m_Player_WallGrab;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
+        public InputAction @OpenWorldMap => m_Wrapper.m_Player_OpenWorldMap;
+        public InputAction @ZoomInMap => m_Wrapper.m_Player_ZoomInMap;
+        public InputAction @ZoomOutMap => m_Wrapper.m_Player_ZoomOutMap;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -341,6 +410,15 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
+            @OpenWorldMap.started += instance.OnOpenWorldMap;
+            @OpenWorldMap.performed += instance.OnOpenWorldMap;
+            @OpenWorldMap.canceled += instance.OnOpenWorldMap;
+            @ZoomInMap.started += instance.OnZoomInMap;
+            @ZoomInMap.performed += instance.OnZoomInMap;
+            @ZoomInMap.canceled += instance.OnZoomInMap;
+            @ZoomOutMap.started += instance.OnZoomOutMap;
+            @ZoomOutMap.performed += instance.OnZoomOutMap;
+            @ZoomOutMap.canceled += instance.OnZoomOutMap;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -363,6 +441,15 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
+            @OpenWorldMap.started -= instance.OnOpenWorldMap;
+            @OpenWorldMap.performed -= instance.OnOpenWorldMap;
+            @OpenWorldMap.canceled -= instance.OnOpenWorldMap;
+            @ZoomInMap.started -= instance.OnZoomInMap;
+            @ZoomInMap.performed -= instance.OnZoomInMap;
+            @ZoomInMap.canceled -= instance.OnZoomInMap;
+            @ZoomOutMap.started -= instance.OnZoomOutMap;
+            @ZoomOutMap.performed -= instance.OnZoomOutMap;
+            @ZoomOutMap.canceled -= instance.OnZoomOutMap;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -434,6 +521,9 @@ public partial class @Platformer2d: IInputActionCollection2, IDisposable
         void OnDash(InputAction.CallbackContext context);
         void OnWallGrab(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnOpenWorldMap(InputAction.CallbackContext context);
+        void OnZoomInMap(InputAction.CallbackContext context);
+        void OnZoomOutMap(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

@@ -30,6 +30,7 @@ public class PlayerHealthController : MonoBehaviour
 
     private void Start()
     {
+        ResetHealth();
     }
 
     private void Update()
@@ -63,10 +64,9 @@ public class PlayerHealthController : MonoBehaviour
         {
             return;
         }
-        curHealth-=damageAmount;
+        ModifyHealth(-damageAmount);
         if (curHealth<=0)
         {
-            curHealth=0;
             RespawnController.instance.Respawn();
             AudioManager.instance.PlaySFX(8);
         }
@@ -75,17 +75,16 @@ public class PlayerHealthController : MonoBehaviour
             invincCounter=invincibilityLength;
             AudioManager.instance.PlaySFXWithRandomPitch(11);
         }
-        UIController.instance.UpdateHealth(curHealth, maxHealth);
     }
 
     public void ModifyHealth(int healAmount) 
     {
         curHealth += healAmount;
-        if (curHealth>maxHealth)
+        Mathf.Clamp(curHealth,0, maxHealth);
+        if (UIController.instance)
         {
-            curHealth = maxHealth;  
+            UIController.instance.UpdateHealth(curHealth, maxHealth);
         }
-        UIController.instance.UpdateHealth(curHealth, maxHealth);
     }
 
     public void ResetHealth() 

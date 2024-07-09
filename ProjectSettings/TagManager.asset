@@ -22,8 +22,8 @@ TagManager:
   - TriggerZone
   - Enemy
   - EnemyProjectile
-  - 
-  - 
+  - Map
+  - OnlyFullScreenMap
   - 
   - 
   - 

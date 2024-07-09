@@ -99,6 +99,7 @@ public class PlayerController : MonoBehaviour
         input.WallGrabEvent += OnWallGrab;
         input.WallGrabCanceledEvent += OnWallGrabCanceled;
         input.PauseEvent += OnPause;
+        input.OpenWorldMapEvent += OnToggleWorldMap;
         input.SetGamePlay();
     }
 
@@ -113,6 +114,7 @@ public class PlayerController : MonoBehaviour
         input.WallGrabEvent -= OnWallGrab;
         input.WallGrabCanceledEvent -= OnWallGrabCanceled;
         input.PauseEvent -= OnPause;
+        input.OpenWorldMapEvent -= OnToggleWorldMap;
     }
 
     void Update()
@@ -297,6 +299,24 @@ public class PlayerController : MonoBehaviour
     private void OnPause()
     {
         UIController.instance.TogglePause();
+    }
+
+    private void OnToggleWorldMap()
+    {
+        if (!UIController.instance.fullScreenMap.activeInHierarchy) 
+        {
+            UIController.instance.fullScreenMap.SetActive(true);
+            Time.timeScale = 0f;
+            canMove = false;
+            MapController.instance.fullMapCam.SetActive(true);
+        }
+        else 
+        {
+            UIController.instance.fullScreenMap.SetActive(false);
+            Time.timeScale = 1f;
+            canMove = true;
+            MapController.instance.fullMapCam.SetActive(false);
+        }
     }
 
     private void Walk() 

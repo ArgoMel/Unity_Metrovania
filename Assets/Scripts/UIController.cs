@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +11,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private InputRender input;
     public Slider healthSlider;
     public GameObject pauseScreen;
+    public GameObject fullScreenMap;
 
     public Image fadeScreen;
     public float fadeSpeed=2f;
@@ -94,6 +94,8 @@ public class UIController : MonoBehaviour
         PlayerHealthController.instance = null;
         Destroy(RespawnController.instance.gameObject);
         RespawnController.instance = null;
+        Destroy(MapController.instance.gameObject);
+        MapController.instance = null;
         instance = null;
         Destroy(gameObject);
         SceneManager.LoadScene("Main Menu");

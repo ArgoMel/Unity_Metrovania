@@ -19,8 +19,13 @@ public class InputRender : ScriptableObject
     public event Action DashEvent;
     public event Action WallGrabEvent;
     public event Action WallGrabCanceledEvent;
-
     public event Action PauseEvent;
+    public event Action OpenWorldMapEvent;
+    public event Action ZoomInMapEvent;
+    public event Action ZoomInMapCanceledEvent;
+    public event Action ZoomOutMapEvent;
+    public event Action ZoomOutMapCanceledEvent;
+
     public event Action ResumeEvent;
 
     private void OnEnable()
@@ -102,6 +107,38 @@ public class InputRender : ScriptableObject
         if (context.phase == InputActionPhase.Performed)
         {
             PauseEvent?.Invoke();
+        }
+    }
+
+    public void OnOpenWorldMap(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            OpenWorldMapEvent?.Invoke();
+        }
+    }
+
+    public void OnZoomInMap(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            ZoomInMapEvent?.Invoke();
+        }
+        if (context.phase == InputActionPhase.Canceled)
+        {
+            ZoomInMapCanceledEvent?.Invoke();
+        }
+    }
+
+    public void OnZoomOutMap(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            ZoomOutMapEvent?.Invoke();
+        }
+        if (context.phase == InputActionPhase.Canceled)
+        {
+            ZoomOutMapCanceledEvent?.Invoke();
         }
     }
 
